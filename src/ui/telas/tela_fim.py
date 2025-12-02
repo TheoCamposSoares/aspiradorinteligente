@@ -29,6 +29,7 @@ class TelaFim:
         )
         
         self.fonte_grande = get_font(64)
+        self.fundo = get_background()
 
     def configurar(self, passos):
         self.passos_finais = passos
@@ -42,7 +43,7 @@ class TelaFim:
         pass
 
     def desenhar(self, superficie):
-        superficie.fill(COR_FUNDO)
+        superficie.blit(self.fundo, (0, 0))
         
         texto_fim = self.fonte_grande.render("Simulação Finalizada!", True, COR_TEXTO)
         rect_fim = texto_fim.get_rect(center=(LARGURA_TELA // 2, ALTURA_TELA // 2 - 100))

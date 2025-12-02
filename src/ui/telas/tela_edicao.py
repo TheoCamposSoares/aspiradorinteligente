@@ -8,8 +8,8 @@ class TelaEdicao:
         self.gerenciador = gerenciador
         self.modo = None # "simples" ou "objetivo"
         self.grid_size = (0, 0)
-        self.celulas = {} # (x, y) -> tipo ("sujeira", "parede", "vazio")
-        self.ferramenta_atual = "sujeira" # "sujeira", "parede"
+        self.celulas = {} # (x, y) -> tipo ("sujeira", "obstaculo", "vazio")
+        self.ferramenta_atual = "sujeira" # "sujeira", "obstaculo"
         
         # Armazenar caminho dos assets
         base_path = os.path.dirname(__file__)
@@ -26,6 +26,7 @@ class TelaEdicao:
         
         self.offset_x = 0
         self.offset_y = 0
+        self.fundo = get_background()
     
     def _load_sprites(self, cell_size):
         """Carrega sprites com o tamanho de célula especificado"""
@@ -58,7 +59,12 @@ class TelaEdicao:
                 fallback.fill(COR_PAREDE if full_cell else COR_SUJEIRA)
                 return fallback
 
-        self.sprite_parede = load_sprite_proportional('parede.png', full_cell=True)
+
+        # Sprites de obstáculos (paredes antigas comentadas)
+        # self.sprite_obstaculo = load_sprite_proportional('parede.png', full_cell=True)  # Parede antiga
+        # self.sprite_obstaculo = load_sprite_proportional('paredenave.png', full_cell=True)  # Parede nave
+        self.sprite_cadeira = load_sprite_proportional('spritecadeira.png', full_cell=True)
+        self.sprite_mesa = load_sprite_proportional('spritemesa.png', full_cell=True)
         self.sprite_sujeira = load_sprite_proportional('poeira.png', size_multiplier=0.8)
 
     def configurar(self, modo):
@@ -69,6 +75,7 @@ class TelaEdicao:
             self.grid_size = (7, 7)
             
         self.celulas = {} # Limpa grid
+        self.proximo_obstaculo = "cadeira" # Alterna entre cadeira e mesa
         
         # Definir tamanho de célula baseado no modo
         self.tamanho_celula = 200 if modo == "simples" else TAMANHO_CELULA
@@ -86,7 +93,7 @@ class TelaEdicao:
         self.btn_comecar = Botao(LARGURA_TELA - 180, ALTURA_TELA - 80, 150, 50, "Começar", acao=self.iniciar_jogo)
         
         self.btn_sujeira = Botao(LARGURA_TELA - 180, 100, 150, 50, "Sujeira", acao=lambda: self.selecionar_ferramenta("sujeira"))
-        self.btn_parede = Botao(LARGURA_TELA - 180, 170, 150, 50, "Parede", acao=lambda: self.selecionar_ferramenta("parede"))
+        self.btn_obstaculo = Botao(LARGURA_TELA - 180, 170, 150, 50, "Obstáculo", acao=lambda: self.selecionar_ferramenta("obstaculo"))
 
     def selecionar_ferramenta(self, ferramenta):
         self.ferramenta_atual = ferramenta
@@ -105,7 +112,7 @@ class TelaEdicao:
             self.btn_comecar.lidar_evento(evento)
             self.btn_sujeira.lidar_evento(evento)
             if self.modo == "objetivo":
-                self.btn_parede.lidar_evento(evento)
+                self.btn_obstaculo.lidar_evento(evento)
                 
             if evento.type == pygame.MOUSEBUTTONDOWN:
                 if evento.button == 1: # Clique esquerdo
@@ -119,6 +126,10 @@ class TelaEdicao:
                         # Toggle ou set
                         if self.celulas.get(key) == self.ferramenta_atual:
                             del self.celulas[key] # Remove se já existe
+                        elif self.ferramenta_atual == "obstaculo":
+                            # Alternar entre cadeira e mesa
+                            self.celulas[key] = self.proximo_obstaculo
+                            self.proximo_obstaculo = "mesa" if self.proximo_obstaculo == "cadeira" else "cadeira"
                         else:
                             self.celulas[key] = self.ferramenta_atual
 
@@ -126,7 +137,7 @@ class TelaEdicao:
         pass
 
     def desenhar(self, superficie):
-        superficie.fill(COR_FUNDO)
+        superficie.blit(self.fundo, (0, 0))
         
         # Desenhar Grid
         for x in range(self.grid_size[0]):
@@ -145,8 +156,10 @@ class TelaEdicao:
                 conteudo = self.celulas.get((x, y))
                 if conteudo == "sujeira":
                     superficie.blit(self.sprite_sujeira, (rect.x, rect.y))
-                elif conteudo == "parede":
-                    superficie.blit(self.sprite_parede, (rect.x, rect.y))
+                elif conteudo == "cadeira":
+                    superficie.blit(self.sprite_cadeira, (rect.x, rect.y))
+                elif conteudo == "mesa":
+                    superficie.blit(self.sprite_mesa, (rect.x, rect.y))
         
         # UI Lateral
         self.btn_comecar.desenhar(superficie)
@@ -154,14 +167,14 @@ class TelaEdicao:
         # Highlight ferramenta selecionada
         if self.ferramenta_atual == "sujeira":
             self.btn_sujeira.cor_base = CINZA_ESCURO
-            self.btn_parede.cor_base = COR_BOTAO
+            self.btn_obstaculo.cor_base = COR_BOTAO
         else:
             self.btn_sujeira.cor_base = COR_BOTAO
-            self.btn_parede.cor_base = CINZA_ESCURO
+            self.btn_obstaculo.cor_base = CINZA_ESCURO
             
         self.btn_sujeira.desenhar(superficie)
         if self.modo == "objetivo":
-            self.btn_parede.desenhar(superficie)
+            self.btn_obstaculo.desenhar(superficie)
             
         # Instruções
         fonte = get_font(24)

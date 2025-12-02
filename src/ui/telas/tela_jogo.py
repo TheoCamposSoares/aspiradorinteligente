@@ -29,6 +29,7 @@ class TelaJogo:
         self.target_pos = (0, 0)
         self.animating = False
         self.animation_speed = 0.05 # Células por frame (ajustar para suavidade)
+        self.fundo = get_background()
 
     def _get_grid_coords(self, pos_logica):
         """Converte posição lógica (A/B ou x,y) para coordenadas x,y do grid"""
@@ -69,11 +70,18 @@ class TelaJogo:
         
         self.sprite_objetivo = load_sprite_proportional('eve_nanobanana.png', size_multiplier=2.4)
         self.sprite_simples = load_sprite_proportional('walle_triste.png', size_multiplier=1.5)
-        self.sprite_parede = load_sprite_proportional('parede.png', full_cell=True)
+        
+        # Sprites de obstáculos (paredes antigas comentadas)
+        # self.sprite_obstaculo = load_sprite_proportional('parede.png', full_cell=True)  # Parede antiga
+        # self.sprite_obstaculo = load_sprite_proportional('paredenave.png', full_cell=True)  # Parede nave
+        self.sprite_cadeira = load_sprite_proportional('spritecadeira.png', full_cell=True)
+        self.sprite_mesa = load_sprite_proportional('spritemesa.png', full_cell=True)
+        
         self.sprite_sujeira = load_sprite_proportional('poeira.png', size_multiplier=0.8)
 
     def configurar(self, config):
         self.engine = SimulationEngine(config)
+        self.celulas = config.get('celulas', {})  # Armazenar configuração original para saber tipo de obstáculo
         
         # Definir tamanho de célula baseado no modo
         self.tamanho_celula = 200 if self.engine.modo == "simples" else TAMANHO_CELULA
@@ -84,7 +92,7 @@ class TelaJogo:
         # Configurar velocidades baseadas no modo
         if self.engine.modo == "simples":
             self.DELAY_PASSO = 400  # Mais lento (ms entre ações)
-            self.animation_speed = 0.01  # Deslize moderado
+            self.animation_speed = 0.015  # Deslize moderado
         else:
             self.DELAY_PASSO = 150  # Mais rápido
             self.animation_speed = 0.05  # Deslize mais rápido
@@ -145,7 +153,7 @@ class TelaJogo:
                 self.animating = True
 
     def desenhar(self, superficie):
-        superficie.fill(COR_FUNDO)
+        superficie.blit(self.fundo, (0, 0))
         
         # Desenhar Grid e Itens Estáticos
         for x in range(self.engine.grid_size[0]):
@@ -175,8 +183,13 @@ class TelaJogo:
                     # Desenhar sujeira centralizada
                     superficie.blit(self.sprite_sujeira, (rect.x, rect.y))
                 if is_wall:
-                    # Desenhar parede preenchendo célula
-                    superficie.blit(self.sprite_parede, (rect.x, rect.y))
+                    # Verificar tipo de obstáculo na configuração original
+                    obstaculo_tipo = self.celulas.get((x, y))
+                    if obstaculo_tipo == "cadeira":
+                        superficie.blit(self.sprite_cadeira, (rect.x, rect.y))
+                    elif obstaculo_tipo == "mesa":
+                        superficie.blit(self.sprite_mesa, (rect.x, rect.y))
+                    # Se for parede antiga ou tipo desconhecido, não desenha nada (ou poderia usar sprite padrão)
 
         # Desenhar Agente (com posição visual interpolada)
         pixel_x = self.offset_x + self.pos_visual[0] * self.tamanho_celula

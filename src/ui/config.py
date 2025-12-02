@@ -42,6 +42,7 @@ ESTADO_FIM = "fim"
 import os
 _current_dir = os.path.dirname(__file__)
 _font_path = os.path.join(_current_dir, 'assets', 'Orbitron-Regular.ttf')
+_background_path = os.path.join(_current_dir, 'assets', 'fundodegrade.png')
 
 def get_font(size):
     """Retorna a fonte Orbitron no tamanho especificado"""
@@ -50,4 +51,15 @@ def get_font(size):
     except:
         print(f"Erro ao carregar fonte Orbitron, usando fonte padrão")
         return pygame.font.SysFont(None, size)
+
+def get_background():
+    """Retorna a imagem de fundo redimensionada para a tela"""
+    try:
+        bg = pygame.image.load(_background_path).convert()
+        return pygame.transform.scale(bg, (LARGURA_TELA, ALTURA_TELA))
+    except Exception as e:
+        print(f"Erro ao carregar fundo: {e}, usando cor sólida")
+        fallback = pygame.Surface((LARGURA_TELA, ALTURA_TELA))
+        fallback.fill(COR_FUNDO)
+        return fallback
 

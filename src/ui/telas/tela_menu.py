@@ -6,7 +6,7 @@ class TelaMenu:
     def __init__(self, gerenciador):
         self.gerenciador = gerenciador
         
-        largura_btn = 500
+        largura_btn = 300
         altura_btn = 60
         centro_x = LARGURA_TELA // 2
         centro_y = ALTURA_TELA // 2
@@ -16,7 +16,7 @@ class TelaMenu:
             centro_y, 
             largura_btn, 
             altura_btn, 
-            "Jogar com Agente Simples (1x2)",
+            "Agente Simples",
             acao=lambda: self.gerenciador.mudar_estado(ESTADO_EDICAO, modo="simples")
         )
         
@@ -25,11 +25,12 @@ class TelaMenu:
             centro_y + 80, 
             largura_btn, 
             altura_btn, 
-            "Jogar com Agente Objetivo (7x7)",
+            "Agente Objetivo",
             acao=lambda: self.gerenciador.mudar_estado(ESTADO_EDICAO, modo="objetivo")
         )
         
         self.fonte_titulo = get_font(64)
+        self.fundo = get_background()
 
     def processar_eventos(self, eventos):
         for evento in eventos:
@@ -40,7 +41,7 @@ class TelaMenu:
         pass
 
     def desenhar(self, superficie):
-        superficie.fill(COR_FUNDO)
+        superficie.blit(self.fundo, (0, 0))
         
         # Título
         titulo_surf = self.fonte_titulo.render("DustBusters", True, COR_TEXTO)

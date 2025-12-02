@@ -34,7 +34,7 @@ class SimulationEngine:
             for (x, y), tipo in celulas.items():
                 if tipo == "sujeira":
                     sujeiras.add((x, y))
-                elif tipo == "parede":
+                elif tipo in ["parede", "cadeira", "mesa"]:  # Aceita paredes antigas e novos obstáculos
                     obstaculos.add((x, y))
             
             self.ambiente = AmbienteGrid7x7(
