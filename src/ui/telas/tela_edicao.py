@@ -76,6 +76,7 @@ class TelaEdicao:
             
         self.celulas = {} # Limpa grid
         self.proximo_obstaculo = "cadeira" # Alterna entre cadeira e mesa
+        self.ferramenta_atual = "sujeira"
         
         # Definir tamanho de célula baseado no modo
         self.tamanho_celula = 200 if modo == "simples" else TAMANHO_CELULA
