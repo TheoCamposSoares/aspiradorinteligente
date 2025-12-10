@@ -11,7 +11,9 @@
 * Saulo Carlos Pereira da Rocha (20240020687)
 
 ## Descrição do Projeto
-[Descreva aqui em 1 ou 2 parágrafos a proposta do projeto e as tecnologias utilizadas para seu desenvolvimento]
+Entender do que se trata Inteligência Artificial requer compreender uma série de definições fundamentais que permeiam esse ramo da tecnologia. A definição de agente inteligente, por exemplo, é alimentada a partir de diferentes tipos de agentes (como um agente reativo simples ou um agente baseado em objetivo), algoritmos que diferem em arquitetura e na forma como os problemas são resolvidos. No contexto de ensino e aprendizagem, observar a funcionalidade de um certo tipo de agente em um simulador visual-interativo tende a maximizar a compreensão desse conceito pelos discentes e dinamizar parte da execução da disciplina pelo docente.
+
+Diante disso, o presente trabalho tem como objetivo o desenvolvimento de uma plataforma visual didático interativa que elucida, de forma mais clara e atrativa, as definições de agente reativo simples e agente baseado em objetivo. Para isso, utilizamos a linguagem de programação Python e duas principais bibliotecas relacionadas: PyGame e Pytest. Além disso, para atingirmos a implementação efetiva do algoritmo de agente baseado em objetivo, aplicamos o algoritmo de busca heurística A* em conjunto com cálculo da Distância Manhattan.
 
 ## Guia de Instalação e Execução
 
@@ -29,12 +31,20 @@ cd DustBusters
 pip install -r requirements.txt
 ````
 
-### 2. Como Executar
+### 2. Como Executar a aplicação
 
 Execute o comando abaixo no terminal para iniciar o servidor local:
 
 ```bash
 python -m src.main
+```
+
+### 3. Como Executar os testes
+
+Execute o comando abaixo no terminal:
+
+```bash
+pytest -v
 ```
 
 ## Estrutura dos Arquivos
