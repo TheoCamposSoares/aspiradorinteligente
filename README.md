@@ -1,4 +1,4 @@
-# [DustBusters]
+# DustBusters
 
 **Disciplina:** Introdução à Inteligência Artificial  
 **Semestre:** 2025.2  
@@ -58,4 +58,4 @@ python -m src.main
 
 ## Referências
 
-  * [Stuart Russell and Peter Norvig. Artificial Intelligence: A Modern Approach, 4th US ed.]
+  * Stuart Russell and Peter Norvig. Artificial Intelligence: A Modern Approach, 4th US ed.
