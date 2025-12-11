@@ -22,7 +22,7 @@ Certifique-se de ter o **Python 3.12** instalado. Clone o repositório e instale
 
 ```bash
 # Clone o repositório
-git clone [https://github.com/TheoCamposSoares/DustBusters.git](https://github.com/TheoCamposSoares/DustBusters.git)
+git clone https://github.com/TheoCamposSoares/DustBusters.git
 
 # Entre na pasta do projeto
 cd DustBusters
